@@ -19,10 +19,6 @@ export default class CreateOrdersProducts1613865145440
             type: 'uuid',
           },
           {
-            name: 'customer_id',
-            type: 'uuid',
-          },
-          {
             name: 'order_id',
             type: 'uuid',
           },
@@ -46,14 +42,6 @@ export default class CreateOrdersProducts1613865145440
           },
         ],
         foreignKeys: [
-          {
-            name: 'orders_products_CUSTOMER',
-            referencedTableName: 'customers',
-            referencedColumnNames: ['id'],
-            columnNames: ['customer_id'],
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE',
-          },
           {
             name: 'orders_products_ORDER',
             referencedTableName: 'orders',

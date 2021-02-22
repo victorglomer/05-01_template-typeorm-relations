@@ -14,7 +14,7 @@ interface IProduct {
 }
 
 interface IRequest {
-  id: string;
+  customer_id: string;
   products: IProduct[];
 }
 
@@ -31,9 +31,9 @@ class CreateOrderService {
     private customersRepository: ICustomersRepository,
   ) {}
 
-  public async execute({ id, products }: IRequest): Promise<Order> {
-    const customer = await this.customersRepository.findById(id);
-    if (!customer) {
+  public async execute({ customer_id, products }: IRequest): Promise<Order> {
+    const customerExists = await this.customersRepository.findById(customer_id);
+    if (!customerExists) {
       throw new AppError('Custumer not found');
     }
 
@@ -64,7 +64,7 @@ class CreateOrderService {
 
     if (findProductsWithNoQuantityAvaliable.length) {
       throw new AppError(
-        `the quantity ${findProductsWithNoQuantityAvaliable[0].quantity} is not avaliable for product ${findProductsWithNoQuantityAvaliable[0].product_id} `,
+        `the quantity ${findProductsWithNoQuantityAvaliable[0].quantity} is not avaliable for product ${findProductsWithNoQuantityAvaliable[0].id} `,
       );
     }
 
@@ -74,8 +74,8 @@ class CreateOrderService {
       price: existentProducts.filter(p => p.id === product.id)[0].price,
     }));
 
-    const order = this.ordersRepository.create({
-      customer,
+    const order = await this.ordersRepository.create({
+      customer: customerExists,
       products: serializedProducts,
     });
 
